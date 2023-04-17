@@ -341,9 +341,7 @@ resource "aws_iam_account_password_policy" "strict" {
   max_password_age = 91
   // 12. AWS IAM password policy does not have a minimum of 14 characters (medium)
   // $.resource[*].aws_iam_account_password_policy[*].*[?( @.minimum_password_length<14 )] is not empty
-  minimum_password_length = 8
-  // 13. AWS IAM password policy does not have a lowercase character (medium)
-  // $.resource[*].aws_iam_account_password_policy[*].*[*]
+  minimum_password_length = 14
   require_lowercase_characters = false
   // 14. AWS IAM password policy does not have a number (medium)
   // $.resource[*].aws_iam_account_password_policy[*].*[*].require_numbers anyFalse
