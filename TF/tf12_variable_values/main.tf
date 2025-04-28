@@ -9,50 +9,64 @@ provider "aws" {
 resource "aws_vpc" "my_vpc" {
   cidr_block = "172.16.0.0/16"
   tags = {
-    Name = "tf-0.12-for-example"
+    Name      = "tf-0.12-for-example"
+    Env       = "prod"
+    yor_trace = "3c418cf7-3e19-4a2b-b0e1-f96d353cb662"
   }
 }
 
 resource "aws_s3_bucket" "publics3" {
-  acl = var.acl
+  acl    = var.acl
   bucket = "publics3"
   versioning {
     enabled = true
   }
+  tags = {
+    Env       = "prod"
+    yor_trace = "425b764e-464a-4831-9c25-89d601bcf5ad"
+  }
 }
 
 resource "aws_security_group" "allow_tcp" {
-  name = "allow_tcp"
+  name        = "allow_tcp"
   description = "Allow TCP inbound traffic"
-  vpc_id = aws_vpc.my_vpc.id
+  vpc_id      = aws_vpc.my_vpc.id
   ingress {
     description = "TCP from VPC"
     // AWS Security Groups allow internet traffic to SSH port (22)
     from_port = 99
-    to_port = 99
-    protocol = "tcp"
+    to_port   = 99
+    protocol  = "tcp"
     cidr_blocks = [
-      var.cidr]
+    var.cidr]
+  }
+  tags = {
+    Env       = "prod"
+    yor_trace = "881adff4-e50f-4f09-bed2-847e54d83f62"
   }
 }
 
 resource "aws_subnet" "my_subnet" {
-  vpc_id = aws_vpc.my_vpc.id
-  cidr_block = "172.16.10.0/24"
+  vpc_id            = aws_vpc.my_vpc.id
+  cidr_block        = "172.16.10.0/24"
   availability_zone = "us-east-1a"
   tags = {
-    Name = "tf-0.12-for-example"
+    Name      = "tf-0.12-for-example"
+    Env       = "prod"
+    yor_trace = "cec599bf-5714-4ab6-975c-3c0497edcd7e"
   }
 }
 
 resource "aws_instance" "ubuntu" {
-  count = 3
-  ami = "ami-2e1ef954"
-  instance_type = "t2.micro"
-  associate_public_ip_address = ( count.index == 1 ? true : false)
-  subnet_id = aws_subnet.my_subnet.id
+  count                       = 3
+  ami                         = "ami-2e1ef954"
+  instance_type               = "t2.micro"
+  associate_public_ip_address = (count.index == 1 ? true : false)
+  subnet_id                   = aws_subnet.my_subnet.id
   tags = {
-    Name = format("terraform-0.12-for-demo-%d", count.index)
+    Name      = format("terraform-0.12-for-demo-%d", count.index)
+    Env       = "prod"
+    yor_trace = "922c17ad-126e-4493-9dda-c6c0ced7750e"
   }
 }
 
@@ -70,8 +84,8 @@ output "private_addresses_old" {
 # This uses the new for expression
 output "private_addresses_new" {
   value = [
-  for instance in aws_instance.ubuntu:
-  instance.private_dns
+    for instance in aws_instance.ubuntu :
+    instance.private_dns
   ]
 }
 
@@ -80,7 +94,7 @@ output "private_addresses_new" {
 # It should work with lists in [x, y, z] form, but does not yet do that
 output "ips" {
   value = [
-  for instance in aws_instance.ubuntu:
-  (instance.public_ip != "" ? list(instance.private_ip, instance.public_ip) : list(instance.private_ip))
+    for instance in aws_instance.ubuntu :
+    (instance.public_ip != "" ? list(instance.private_ip, instance.public_ip) : list(instance.private_ip))
   ]
 }
