@@ -1,10 +1,13 @@
 resource "aws_s3_bucket" "this" {
   count = var.create_bucket ? 1 : 0
 
-  bucket              = var.bucket
-  bucket_prefix       = var.bucket_prefix
-  acl                 = var.acl
-  tags                = var.tags
+  bucket        = var.bucket
+  bucket_prefix = var.bucket_prefix
+  acl           = var.acl
+  tags = merge(var.tags, {
+    Env       = "prod"
+    yor_trace = "11502232-475d-4056-a235-ea936a5e703d"
+  })
   force_destroy       = var.force_destroy
   acceleration_status = var.acceleration_status
   region              = var.region
@@ -25,7 +28,7 @@ resource "aws_s3_bucket" "this" {
     for_each = length(keys(var.cors_rule)) == 0 ? [] : [var.cors_rule]
 
     content {
-//      allowed_methods = cors_rule.value.allowed_methodsp
+      //      allowed_methods = cors_rule.value.allowed_methodsp
       allowed_methods = cors_rule.value.allowed_methods
       allowed_origins = cors_rule.value.allowed_origins
       allowed_headers = lookup(cors_rule.value, "allowed_headers", null)

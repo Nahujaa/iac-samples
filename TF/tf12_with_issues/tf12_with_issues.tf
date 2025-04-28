@@ -8,5 +8,9 @@ provider "aws" {
 
 resource "aws_s3_bucket" "foo" {
   bucket = "my-tf-log-bucket"
-  acl = "public-read-write"
+  acl    = "public-read-write"
+  tags = {
+    Env       = "prod"
+    yor_trace = "ebb37dda-a302-4d17-994f-aa7496b80110"
+  }
 }
