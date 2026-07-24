@@ -16,6 +16,10 @@ resource "aws_iam_role" "replication" {
   ]
 }
 POLICY
+  tags = {
+    Env       = "prod"
+    yor_trace = "aaaa57d4-d0ce-4040-8ef3-9ed82b311405"
+  }
 }
 
 resource "aws_iam_policy" "replication" {
@@ -56,6 +60,10 @@ resource "aws_iam_policy" "replication" {
   ]
 }
 POLICY
+  tags = {
+    Env       = "prod"
+    yor_trace = "497185ec-69bd-4be6-943a-aa38bd580c5d"
+  }
 }
 
 resource "aws_iam_policy_attachment" "replication" {
